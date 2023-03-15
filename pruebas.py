@@ -40,14 +40,34 @@ mi_Frame.config(bg="grey")
 #dias de la semana labels
 from tkinter import *
 
-calendario=calendar.monthcalendar(2023,3)
-for r in range(len(calendario)):
-    for c in range(0, 7):
-        if calendario[r][c]==0:
-            pass
-        else:
-            cell = Label(mi_Frame,height=2,width=8,text=calendario[r][c])
-            cell.grid(padx=2, pady=2, row=r, column=c,sticky=S)
+#funcion que muestra el calendario grande
+def mostrar_calendario(anio,mes):
+    calendario=calendar.monthcalendar(anio,mes)
+    for f in range(len(calendario)):
+        for c in range(0, 7):
+            if calendario[f][c]==0:
+                pass
+            else:
+                celda = Label(mi_Frame,height=2,width=8,text=calendario[f][c])
+                celda.grid(padx=2, pady=2, row=f, column=c)
+
+#funcion mostrar_calendario ejecutada, y datos de año y mes actualizados a tiempo real
+m=x.strftime("%m")
+mes=int(m)
+a=x.strftime("%Y")
+anio=int(a)
+mostrar_calendario(anio,mes)
+
+#clase evento 
+class Eventos():
+    def __init__(self,titulo,importancia,fecha_recordatorio,fecha_hora=datetime.datetime.now(),duracion=1,descripcion="",etiquetas=""):
+        """Se crea el objeto evento"""
+        self.titulo=titulo
+        self.fecha_hora=fecha_hora
+        self.descripcion=descripcion
+        self.importancia=importancia
+        self.fecha_recordatorio=fecha_recordatorio
+        self.etiquetas=etiquetas
 
 
 raiz.mainloop()

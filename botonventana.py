@@ -16,30 +16,34 @@ boton.place(x=50,y=50)
 #BOTON AGREGARR 
 from tkinter import *
 from tkinter.ttk import *
-#https://recursospython.com/guias-y-manuales/caja-de-texto-entry-tkinter/
-def openNewWindow():
+
+#Abrir la ventana cuando el boton agregar es ejecutado.
+def abrir_ventana():
      
     # Toplevel object which will
     # be treated as a new window
-    newWindow = Toplevel(root)
- 
+    ventananueva = Toplevel(root)
+    ventananueva.iconbitmap("calendario.ico")
     # sets the title of the
     # Toplevel widget
-    newWindow.title("New Window")
+    ventananueva.title("Agregar evento")
  
     # sets the geometry of toplevel
-    newWindow.geometry("300x300")
- 
-    # A Label widget to show in toplevel
-    Label(newWindow,text ="Agregar evento").pack()
+    ventananueva.geometry("250x200")
+    
+    #Label Dia,
+    dial=Label(ventananueva,text="Dia:")
+    dial.place(x=65,y=32)
+    celda=Entry(ventananueva,width=10)
+    celda.place(x=95,y=32)
 
-    entry = ttk.Entry(newWindow,width=5)
-    entry.place(x=10, y=10)
+    mesl=Label(ventananueva,text="Mes:")
+    mesl.place(x=65,y=62)
+    celd=Entry(ventananueva,width=10)
+    celd.place(x=95,y=62)
 
-
-boton1=ttk.Button(text="agregar",command=openNewWindow)
+boton1=ttk.Button(text="agregar",command=abrir_ventana)
 boton1.place(x=10,y=100)
-
 
 
 root.mainloop()

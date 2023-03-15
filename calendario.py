@@ -15,5 +15,5 @@ print(calendar.monthrange(2023,3))
 print(calendar.monthcalendar(2023,3))
 print(calendar.weekheader(10))
 
-for x in calendar.monthcalendar(2023,3):
-    print(x)
+for semana in calendar.monthcalendar(2023,3):
+    print(semana)

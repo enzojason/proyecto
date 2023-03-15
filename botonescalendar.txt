@@ -1,0 +1,13 @@
+ import tkinter as tk
+
+ ventana = tk.Tk()
+
+ opcion = tk.IntVar()
+ radioSel1 = tk.Radiobutton(ventana, text="Reiniciar lenguajes", variable = 
+ opcion, value = 1)
+ radioSel1.place(x=15,y=280)  
+
+ botonOk = tk.Button(ventana, text="OK")
+ botonOk.place(x=15,y=350)
+
+ ventana.mainloop()

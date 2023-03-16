@@ -33,41 +33,64 @@ root.mainloop()
 """
 
 
-
-
-
-
-
-
-
 import calendar
 from tkinter import messagebox, ttk
 import tkinter as tk
 def show_selection():
     # Obtener la opción seleccionada.
     selection = combo.get()
-
     messagebox.showinfo(
         message=f"La opción seleccionada es: {selection}",
         title="Selección"
     )
+
 dias=list()
+meses=list()
 
 for x in range(31):
     dias.append(x)
 
+for y in range(12):
+    meses.append(calendar.month_name[y])
+
 main_window = tk.Tk()
 main_window.config(width=300, height=200)
 main_window.title("Combobox")
+
+#combo dias
 combo = ttk.Combobox(
     state="readonly",
-    values=dias
+    values=dias,
+    width="3",
 )
+
+#combo meses
+combo_meses = ttk.Combobox(
+    state="readonly",
+    values=meses,
+    width="10",
+)
+combo_meses.pack()
+combo_meses.place(x=100, y=50)
+
+combo.pack()
 combo.place(x=50, y=50)
 button = ttk.Button(text="Mostrar selección", command=show_selection)
 button.place(x=50, y=100)
+
+from tkinter import *
+x=IntVar()
+Radiobutton(main_window,
+            text="Esta es la primera opción.",
+            value=1,
+            variable=x).place(x=10,y=150)
+
+Radiobutton(main_window,
+            text="Esta es la segunda opción.",
+            value=2,
+            variable=x).place(x=10,y=100)
+
+
+#BUTTON
+
 main_window.mainloop()
-
-
-
-

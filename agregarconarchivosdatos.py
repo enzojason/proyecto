@@ -79,14 +79,7 @@ class Eventos():
 
 #label.focus_set() #SET THE FOCUS 
 #mostrar mensaje de evento agregado
-def agregado(titulo):
-    #titulo,importancia,fecha_recordatorio,fecha_hora,descripcion):
-    import tkinter as tk
-    from tkinter import messagebox,ttk
-    messagebox.showinfo(message="Evento Agregado", title="Calendario")
-    print(titulo)
-    #nuevoevento=Eventos(titulo,importancia,fecha_recordatorio,fecha_hora,descripcion)
-    #nuevoevento.guardar_evento()
+
 
 #Abrir la ventana cuando el boton agregar es ejecutado.
 def abrir_ventana():
@@ -218,14 +211,26 @@ def abrir_ventana():
     descripcion_texto.place(x=4,y=300)
 
     
-    titulo=tituloe.get()
+    
     #fecha_hora=combo_dias.get()+ combo_meses.get()+combo_anios.get()
     #descripcion=descripcion_texto.get()
     #importancia= IntVar()
     #fecha_recordatorio=diar.get()+horaer()
 
+    def agregado():
+    #titulo,importancia,fecha_recordatorio,fecha_hora,descripcion):
+        import tkinter as tk
+        from tkinter import messagebox,ttk
+        messagebox.showinfo(message="Evento Agregado", title="Calendario")
+        titulo=tituloe.get()
+        x=open("hoja.txt",'w')
+        x.write(titulo)
+        x.close()
+    
+    #nuevoevento=Eventos(titulo,importancia,fecha_recordatorio,fecha_hora,descripcion)
+    #nuevoevento.guardar_evento()
     #BOTON AGREGAR LISTO
-    boton_listo=ttk.Button(ventananueva,text="Agregar",command=agregado(titulo))
+    boton_listo=ttk.Button(ventananueva,text="Agregar",command=agregado)
     boton_listo.pack()
     boton_listo.place(x=85,y=390)
 

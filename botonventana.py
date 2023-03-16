@@ -7,9 +7,12 @@ locale.setlocale(locale.LC_ALL, '')
 root=tk.Tk()
 root.config(width=300,height=200)
 
-#saluda con una ventana nueva y muestra el mensaje
-def saludar():
-    messagebox.showinfo(message="¡Hola, mundo!", title="Saludo")
+#mostrar mensaje de evento agregado
+def agregado():
+    messagebox.showinfo(message="Evento Agregado", title="Calendario")
+
+
+
 
 #label.focus_set() #SET THE FOCUS 
 
@@ -20,17 +23,11 @@ from tkinter.ttk import *
 
 #Abrir la ventana cuando el boton agregar es ejecutado.
 def abrir_ventana():
-     
-    # Toplevel object which will
-    # be treated as a new window
     ventananueva = Toplevel(root)
-    ventananueva.iconbitmap("calendario.ico")
-    # sets the title of the
-    # Toplevel widget
+    #ventananueva.iconbitmap("calendario.ico")
     ventananueva.title("Agregar evento")
- 
-    # sets the geometry of toplevel
-    ventananueva.geometry("250x250")
+    ventananueva.geometry("270x420")
+
     #CREACION DE DIAS Y MESES EN LISTA
     dias=list()
     meses=list()
@@ -40,7 +37,6 @@ def abrir_ventana():
     for y in range(12):
         meses.append(calendar.month_name[y])
        
-        
     
     #Label Dia,
     dial=Label(ventananueva,text="Dia:")
@@ -54,9 +50,7 @@ def abrir_ventana():
 
     horal=Label(ventananueva,text="Duración:")
     horal.place(x=40,y=122)
-    Label(ventananueva,text="hs").place(x=115,y=122)
-    Label(ventananueva,text="min").place(x=160,y=122)
-
+    
     #combo dias
     combodias = ttk.Combobox(
     ventananueva,
@@ -101,6 +95,11 @@ def abrir_ventana():
     minutose.config(width="3")
     minutose.insert(0,"00")
 
+    Label(ventananueva,text="hs").place(x=115,y=122)
+    Label(ventananueva,text="min").place(x=160,y=122)
+
+
+    #SELECCION BOTONES, NORMAL E IMPORTANTE
     Radiobutton(ventananueva,
             text="Normal",
             value=1,
@@ -111,10 +110,43 @@ def abrir_ventana():
             value=2,
             ).place(x=10,y=175)
 
+
+    #LABEL RECORDATORIO
+    Label(ventananueva,text="---------------Recordatorio---------------").place(x=10,y=220)
+    #entrada hora
+    diar =ttk.Entry(ventananueva)
+    diar.place(x=95,y=250)
+    diar.config(width="2")
+    diar.insert(0,1)
+
+    #entrada minutos
+    horaer =ttk.Entry(ventananueva)
+    horaer.place(x=160,y=250)
+    horaer.config(width="3")
+    horaer.insert(0,"00")
+
+    Label(ventananueva,text="Dia:").place(x=65,y=250)
+    Label(ventananueva,text="Hora:").place(x=120,y=250)
+
     
+
+    descripcion=Label(ventananueva,text="Descripción:").place(x=5,y=280)
+
+    #descripcion_entrada=ScrolledText.ScrolledText(ventananueva)
+    #descripcion_entrada.place(x=5,y=290)
+
+    #AREA DE TEXTO , DESCRIPCION
+    text_area = Text(ventananueva, height=5,width=32)
+    text_area.pack()
+    text_area.place(x=4,y=300)
+
+    boton_listo=ttk.Button(ventananueva,text="Agregar",command=agregado)
+    boton_listo.pack()
+    boton_listo.place(x=85,y=390)
+
 #botonagregar
 boton1=ttk.Button(text="agregar",command=abrir_ventana)
-boton1.place(x=10,y=100)
+boton1.place(x=9,y=100)
 
 
 root.mainloop()

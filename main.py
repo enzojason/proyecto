@@ -242,39 +242,39 @@ def abrir_ventana():
         import json
         import tkinter as tk
         from tkinter import messagebox,ttk
-        diccionario={}
         messagebox.showinfo(message="Evento Agregado", title="Calendario")
         
+
         titulo=tituloe.get()
-        diccionario["Titulo"]:titulo
-        diccionario["Descripcion"]:descripcion_texto.get()
         
         diac=combo_dias.get()
         mesc=combo_meses.get()
         aniosc=combo_anios.get()
 
         fecha=diac+"/"+mesc+"/"+aniosc
-        diccionario["Fecha"]:fecha
-
+    
         horac=combo_horas.get()
-        diccionario["Hora"]:horac
-
         
         hora=horaed.get()
         minuto=minutosed.get()
-        #duracion='{}:{}'.format(hora,minuto)
-        duracion=" "
-        diccionario["Duracion"]:duracion
-
+        duracion='{}:{}'.format(hora,minuto)
+        
         hora_recor=horaer.get()
         dia_recor=diar.get()
-        diccionario["Recordatorio Dia"]:dia_recor
-        diccionario["Recordatorio Hora"]:hora_recor
+
         fecha_recordatorio=dia_recor+","+hora_recor
-        importancia=1
-        
-        nuevoevento=Eventos(titulo,fecha,hora,importancia,fecha_recordatorio,duracion,descripcion)
-        nuevoevento.guardar_evento()
+
+        descripcion=descripcion_texto.get("1.0","end")
+
+        if radioValue==2:
+            importancia="Importante"
+        else:
+            importancia="Normal"
+    
+        t=titulo
+        t=Eventos(titulo,fecha,hora,importancia,fecha_recordatorio,duracion,descripcion)
+        t.guardar_evento()
+        t=0
         ventananueva.destroy()
     #BOTON AGREGAR LISTO
     boton_listo=ttk.Button(ventananueva,text="Agregar",command=agregado)
@@ -282,10 +282,6 @@ def abrir_ventana():
     boton_listo.place(x=85,y=390)
 
     
-        
-
-    
-
   
 #botonagregar
 boton1=Button(raiz,text="Agregar\nEvento",command=abrir_ventana)

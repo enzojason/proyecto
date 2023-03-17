@@ -1,21 +1,18 @@
-
-#from tkinter import * 
-#raiz = Tk()
 import calendar
 import locale
 import datetime
 import tkinter as tk
-
-raiz=tk.Tk()
-
-raiz.title("Calendario") #Cambiar el nombre de la ventana
-raiz.geometry("500x400")
-#raiz.iconbitmap("calendario.ico") #Cambiar el icono
-raiz.resizable(0,0) #si la ventana es manipulable de x,y 0,0=NO redimencionar
-
-#label fecha actual
+from centralizacion import centrar
 locale.setlocale(locale.LC_ALL, '')
 from tkinter import *
+
+raiz=tk.Tk()
+raiz.title("Calendario") #Cambiar el nombre de la ventana
+raiz.geometry("500x400")
+centrar(raiz,500,400)
+raiz.iconbitmap("calendario.ico") #Cambiar el icono
+raiz.resizable(0,0) #si la ventana es manipulable de x,y 0,0=NO redimencionar
+
 x=datetime.datetime.now()
 fecha=x.strftime("%A %d/%m/%Y")
 labelfecha=Label(raiz,text=fecha)
@@ -84,13 +81,15 @@ class Eventos():
 
 #Abrir la ventana cuando el boton agregar es ejecutado.
 def abrir_ventana():
-
-    ventananueva = Toplevel(raiz)
+    from centralizacion import centrar
     import tkinter as tk
     from tkinter import messagebox,ttk
-    #ventananueva.iconbitmap("calendario.ico")
+    ventananueva = Toplevel(raiz)
     ventananueva.title("Agregar evento")
     ventananueva.geometry("270x420")
+    centrar(ventananueva,270,420)
+    #ventananueva.iconbitmap("calendario.ico")
+    
     
     #CREACION DE HORAS,DIAS Y MESES EN LISTA
     dias=list()

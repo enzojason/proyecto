@@ -264,14 +264,14 @@ def abrir_ventana():
         fecha_recordatorio=dia_recor+","+hora_recor
 
         descripcion=descripcion_texto.get("1.0","end")
-
+        des=descripcion.strip()
         if radioValue==2:
             importancia="Importante"
         else:
             importancia="Normal"
     
         t=titulo
-        t=Eventos(titulo,fecha,hora,importancia,fecha_recordatorio,duracion,descripcion)
+        t=Eventos(titulo,fecha,hora,importancia,fecha_recordatorio,duracion,des)
         t.guardar_evento()
         t=0
         ventananueva.destroy()

@@ -38,8 +38,11 @@ anio=int(a)
 encabezado=Label(raiz,text="Lunes     Martes     Miercoles  Jueves   Viernes     Sabado    Domingo")
 encabezado.place(x=20,y=75)
 encabezado.config(fg="black",bg="white",font=("Verdana",11))
-#clase evento 
 
+cr=open("eventos.json",'w')
+cr.close()
+
+#clase evento 
 class Eventos():
     def __init__(self,titulo,fechayhora,importancia,fecha_recordatorio,duracion,descripcion="",etiquetas=""):
         """Se crea el objeto evento"""
@@ -50,15 +53,20 @@ class Eventos():
         self.duracion=duracion
         self.fecha_recordatorio=fecha_recordatorio
         self.etiquetas=etiquetas
-        
+
+    listaeventos=[]
     
     def agregar_evento():
-        #agrega eventos en archivo json
         import json
-        with open("datos.json",'r') as ar:
-            data=json.load(ar)
-        with open("eventos.json",'a') as archivo:
-            json.dump(data,archivo)
+        Eventos.listaeventos
+        with open ("eventos.json",'w') as archivo:
+            json.dump(Eventos.listaeventos,archivo)
+    
+    
+
+        
+        
+
 
 class CalendarioSemanal():
     def __init__(self,numero): 
@@ -276,7 +284,7 @@ def abrir_ventana():
         messagebox.showinfo(message="Evento Agregado", title="Calendario")
         titulo=tituloe.get()
         #fecha y hora actuales
-        fechayhora=[fechan+","+horaln]
+        fechayhora=(fechan+","+horaln)
 
         #duracion
         horaf=horaed.get()
@@ -290,7 +298,7 @@ def abrir_ventana():
 
         diare=dia_recor+"/"+"3"+"/"+"2023"
         horar = hora_recor+":"+mier
-        fecha_recordatorio=[diare+","+horar]
+        fecha_recordatorio=(diare+","+horar)
 
         descripcion=descripcion_texto.get("1.0","end")
         des=descripcion.rstrip()
@@ -300,18 +308,15 @@ def abrir_ventana():
             importancia="Normal"
         elif im=="2":
             importancia="Importante"
-
-        datos=[{"Descripcion":des,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha y hora":fechayhora,"Titulo":titulo,"Duracion":duracion}]
-        def guardar_evento(datos):
-            """Guarda datos en un archivo json cuando el boton de agregar es ejecutado"""
-            import json
-            with open("datos.json",'w') as archivo:
-                json.dump(datos,archivo)
-            Eventos.agregar_evento()
-        
-        guardar_evento(datos)
+       
+        import json
+        entry={"Descripcion":des,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha y hora":fechayhora,"Titulo":titulo,"Duracion":duracion}
+        Eventos.listaeventos.append(entry)
+        Eventos.agregar_evento()
+           
         
 
+            
         def modificar_evento():
             from centralizacion import centrar
             import tkinter as tk
@@ -324,24 +329,6 @@ def abrir_ventana():
             centrar(ventanamod,270,350)
             
             
-            #configuracion
-            import json
-            with open("eventos.json",'r') as a:
-                datoss=json.load(a)
-            with open('eventos.json', 'w') as f:
-                json.dump(datoss, f, indent=4)
-
-            listatitulos=list()
-
-            datajs = json.dumps(datoss, indent=4, sort_keys=True)#list json
-            datas = json.loads(datajs)#objeto python
-            #mostrar y añadir a lista Titulos
-            for a in range(len(datas)):
-                aa=(datas[a])
-                for b in aa:
-                    c=aa[b]
-                    if b == "Titulo":
-                        listatitulos.append(c)
 
             def selecciontitulo():
                 f=Frame(ventanamod)
@@ -365,13 +352,9 @@ def abrir_ventana():
                 horam.place(x=20,y=200)
                 horam.insert(0,"Hora")
 
-
-                
-
-
             #Label modifcar evento
             Label(ventanamod,text="Seleccione que evento desea modificar:").place(x=5,y=5)   
-            c=ttk.Combobox(ventanamod,values=listatitulos)
+            c=ttk.Combobox(ventanamod,values=[1,2,3])
             c.place(x=50,y=50)
             c.config(width="6")
             #boton seleccionar

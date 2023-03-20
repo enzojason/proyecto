@@ -10,7 +10,7 @@ from tkinter import *
 raiz=tk.Tk()
 raiz.title("Calendario") #Cambiar el nombre de la ventana
 raiz.geometry("500x400")
-centrar(raiz,550,400)
+centrar(raiz,500,400)
 raiz.iconbitmap("calendario.ico") #Cambiar el icono
 raiz.resizable(0,0) #si la ventana es manipulable de x,y 0,0=NO redimencionar
 
@@ -55,7 +55,8 @@ class Eventos():
         self.etiquetas=etiquetas
 
     listaeventos=[]
-    
+    listadias=[]
+
     def agregar_evento():
         import json
         Eventos.listaeventos
@@ -65,7 +66,7 @@ class Eventos():
 
 
 
-class CalendarioSemanal():
+class CalendarioPrincipal():
     def __init__(self,numero): 
         self.numero=numero
     x=datetime.datetime.now()
@@ -84,15 +85,50 @@ class CalendarioSemanal():
             if dias==dia_actual:
                 numero_de_semana=a
 
-from tkinter import ttk
-#BOTON CAMBIAR EL CALENDARIO A MENSUAL
-cambiar=ttk.Button(raiz,text="Calendario Mensual")
-cambiar.place(x=5,y=10)
+    
+
 
 #funcion que muestra el calendario SEMANAL
+def mostrar_calendario_mensual():
+    from centralizacion import centrar
+    import tkinter as tk
+    from tkinter import messagebox,ttk
+    raizm = Toplevel(raiz)
+    raizm.iconbitmap("calendario.ico") #Cambiar el icono
+    raizm.resizable(0,0)
+    raizm.focus_set()
+    raizm.title("Calendario Mensual")
+    raizm.geometry("500x400")
+    centrar(raizm,500,400)
+    mif=Frame(raizm)
+    mif.pack(padx=10,pady=100)
+    mif.config(width="550",height="720")
+    mif.config(bg="grey")
+
+    def mostrar(calendario):
+        for f in range(len(calendario)):
+            for c in range(0, 7):
+                if calendario[f][c]==0:
+                    pass
+                else:
+                    celda = Label(mif,height=2,width=8,text=calendario[f][c])
+                    celda.grid(padx=2, pady=2, row=f, column=c)
+    
+    anio=CalendarioPrincipal.anio
+    mes=CalendarioPrincipal.mes_actual
+    calendario=calendar.monthcalendar(anio,mes)
+    mostrar(calendario)
+
+
+from tkinter import ttk
+
+#BOTON CAMBIAR EL CALENDARIO A MENSUAL
+cambiar=ttk.Button(raiz,text="Calendario Mensual",command=mostrar_calendario_mensual)
+cambiar.place(x=5,y=10)
+
 def mostrar_calendario(mes,numero_semana):
     semana=mes[numero_semana]
-    CalendarioSemanal.numero_de_semana=numero_semana
+    CalendarioPrincipal.numero_de_semana=numero_semana
     y=0
     for x in semana:
         if x==0:
@@ -104,14 +140,15 @@ def mostrar_calendario(mes,numero_semana):
         celda.grid(padx=1,pady=1,row=0,column=y)
 
 
-mostrar_calendario(CalendarioSemanal.mes,CalendarioSemanal.numero_de_semana)
+mostrar_calendario(CalendarioPrincipal.mes,CalendarioPrincipal.numero_de_semana)
+
 def siguiente_semana():
-    s=CalendarioSemanal.numero_de_semana + 1
-    mostrar_calendario(CalendarioSemanal.mes,s)
+    s=CalendarioPrincipal.numero_de_semana + 1
+    mostrar_calendario(CalendarioPrincipal.mes,s)
 
 def anterior_semana():
-    s=CalendarioSemanal.numero_de_semana - 1
-    mostrar_calendario(CalendarioSemanal.mes,s)
+    s=CalendarioPrincipal.numero_de_semana - 1
+    mostrar_calendario(CalendarioPrincipal.mes,s)
 
 from tkinter import ttk
 #boton siguiente semana
@@ -309,7 +346,25 @@ def abrir_ventana():
         entry={"Descripcion":des,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha y hora":fechayhora,"Titulo":titulo,"Duracion":duracion}
         Eventos.listaeventos.append(entry)
         Eventos.agregar_evento()
-           
+        Eventos.listadias.append(dia_actual)
+
+        def actualizar_calendario(mes,numero_semana):
+            semana=mes[numero_semana]
+            CalendarioPrincipal.numero_de_semana=numero_semana
+            y=0
+            for x in semana:
+                if x==dia_actual:
+                    celda=Label(mi_Frame,height=9,width=6,text=x,bg="red")
+                elif x==0:
+                    celda=Label(mi_Frame,height=9,width=6,text="-",bg="grey")
+                else:
+                    celda=Label(mi_Frame,height=9,width=6,text=x,bg="grey")
+                y=y+1
+                celda.config(fg="black",bg="white",font=("Verdana",13))
+                celda.grid(padx=1,pady=1,row=0,column=y)
+
+        actualizar_calendario(CalendarioPrincipal.mes,CalendarioPrincipal.numero_de_semana)
+
         def eliminar_evento():
             from centralizacion import centrar
             import tkinter as tk
@@ -492,7 +547,7 @@ def abrir_ventana():
         
     def salir():
         ventananueva.quit()
-
+    
     
 
     #BOTON AGREGAR LISTO

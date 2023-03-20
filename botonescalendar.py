@@ -27,17 +27,12 @@ class CalendarioSemanal():
             if dias==dia_actual:
                 numero_de_semana=a
     
-    
 
 root = Tk()
 mi_Frame=Frame(root)
 mi_Frame.pack(padx=10,pady=100)
 mi_Frame.config(width="550",height="420")
 mi_Frame.config(bg="black")
-
-    
-
-print("dia actual",CalendarioSemanal.dia_actual)
 
 
 def mostrar_calendario(mes,numero_semana):
@@ -46,15 +41,15 @@ def mostrar_calendario(mes,numero_semana):
     y=0
     for x in semana:
         if x==0:
-            celda=Label(mi_Frame,height=9,width=6,text="-",bg="grey")
+            celda=Label(mi_Frame,height=3,width=6,text="-",bg="grey")
+
         else:
-            celda=Label(mi_Frame,height=9,width=6,text=x,bg="grey")
+            celda=Label(mi_Frame,height=3,width=6,text=x,bg="grey")
         y=y+1
         celda.config(fg="black",bg="white",font=("Verdana",13))
         celda.grid(padx=1,pady=1,row=0,column=y)
     
-
-
+    
 mostrar_calendario(CalendarioSemanal.mes,CalendarioSemanal.numero_de_semana)
 
 

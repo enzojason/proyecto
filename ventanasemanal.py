@@ -6,39 +6,19 @@ from centralizacion import centrar
 locale.setlocale(locale.LC_ALL, '')
 from tkinter import *
 
-#clase evento 
-class Eventos():
-    def __init__(self,titulo,fecha,importancia,fecha_recordatorio,duracion=1,descripcion="",etiquetas=""):
-        """Se crea el objeto evento"""
-        self.titulo=titulo
-        self.fecha=fecha
-        self.descripcion=descripcion
-        self.importancia=importancia
-        self.fecha_recordatorio=fecha_recordatorio
-        self.etiquetas=etiquetas
-
-    import json
-    js=open("eventos.json",'w')
-    js.close()
-
-    def agregar_evento():
-        #agrega eventos en archivo json
-        import json
-        with open("datos.json",'r+') as ar:
-            data=json.load(ar)
-
-        with open("eventos.json",'r')as arc:
-            dataj=json.load(arc)
-        dataj.append(data)
-        with open("eventos.json",'w') as archivo:
-            json.dump(dataj,archivo)
-            
+#ventana principal
 raiz=tk.Tk()
 raiz.title("Calendario") #Cambiar el nombre de la ventana
 raiz.geometry("500x400")
 centrar(raiz,550,400)
 raiz.iconbitmap("calendario.ico") #Cambiar el icono
 raiz.resizable(0,0) #si la ventana es manipulable de x,y 0,0=NO redimencionar
+
+#frame
+mi_Frame=Frame(raiz)
+mi_Frame.pack(padx=10,pady=100)
+mi_Frame.config(width="550",height="420")
+mi_Frame.config(bg="black")
 
 #LABEL FECHA ACTUAL
 x=datetime.datetime.now()
@@ -58,6 +38,44 @@ anio=int(a)
 encabezado=Label(raiz,text="Lunes     Martes     Miercoles  Jueves   Viernes     Sabado    Domingo")
 encabezado.place(x=20,y=75)
 encabezado.config(fg="black",bg="white",font=("Verdana",11))
+#clase evento 
+
+class Eventos():
+    def __init__(self,titulo,fechayhora,importancia,fecha_recordatorio,duracion,descripcion="",etiquetas=""):
+        """Se crea el objeto evento"""
+        self.titulo=titulo
+        self.fechayhora=fechayhora
+        self.descripcion=descripcion
+        self.importancia=importancia
+        self.duracion=duracion
+        self.fecha_recordatorio=fecha_recordatorio
+        self.etiquetas=etiquetas
+        
+    
+
+    def agregar_evento():
+        #agrega eventos en archivo json
+        import json
+        
+
+class CalendarioSemanal():
+    def __init__(self,numero): 
+        self.numero=numero
+    x=datetime.datetime.now()
+    diax=x.strftime("%d")
+    dia_actual=int(diax)
+    m=x.strftime("%m")
+    mes_actual=int(m)
+    a=x.strftime("%Y")
+    anio=int(a)
+
+    calendario=calendar.Calendar()
+    mes = calendario.monthdayscalendar(anio,mes_actual)
+    for a in range(len(mes)):
+        semana=mes[a]
+        for dias in semana:
+            if dias==dia_actual:
+                numero_de_semana=a
 
 from tkinter import ttk
 #BOTON CAMBIAR EL CALENDARIO A MENSUAL
@@ -65,31 +83,39 @@ cambiar=ttk.Button(raiz,text="Calendario Mensual")
 cambiar.place(x=5,y=10)
 
 #funcion que muestra el calendario SEMANAL
-def mostrar_calendario(anio,mes,numero_semana):
-    mi_Frame=Frame()
-    mi_Frame.pack(padx=10,pady=100)
-    mi_Frame.config(width="550",height="420")
-    mi_Frame.config(bg="black")
-
-    cal=calendar.Calendar()
-    meses= cal.monthdayscalendar(anio,mes)
-    semana=meses[numero_semana]
+def mostrar_calendario(mes,numero_semana):
+    semana=mes[numero_semana]
+    CalendarioSemanal.numero_de_semana=numero_semana
+    y=0
     for x in semana:
-        celda=Label(mi_Frame,height=9,width=6,text=x,bg="grey")
+        if x==0:
+            celda=Label(mi_Frame,height=9,width=6,text="-",bg="grey")
+        else:
+            celda=Label(mi_Frame,height=9,width=6,text=x,bg="grey")
+        y=y+1
         celda.config(fg="black",bg="white",font=("Verdana",13))
-        celda.grid(padx=1,pady=1,row=0,column=x)
+        celda.grid(padx=1,pady=1,row=0,column=y)
 
 
-#calcular numero de semana donde se encuentra el dia en la matriz que se va a crear Mes
-def calcular_semana_actual(anio,mes):
-    calendario=calendar.Calendar()
-    meses = calendario.monthdayscalendar(anio,mes)
-    for a in range(len(meses)):
-            semana=meses[a]
-            for dias in semana:
-                if dias==dia_actual:
-                    numero_de_semana=a
-    return numero_de_semana
+mostrar_calendario(CalendarioSemanal.mes,CalendarioSemanal.numero_de_semana)
+def siguiente_semana():
+    s=CalendarioSemanal.numero_de_semana + 1
+    mostrar_calendario(CalendarioSemanal.mes,s)
+
+def anterior_semana():
+    s=CalendarioSemanal.numero_de_semana - 1
+    mostrar_calendario(CalendarioSemanal.mes,s)
+
+from tkinter import ttk
+#boton siguiente semana
+sigue=ttk.Button(raiz,text="Semana Siguiente",command=siguiente_semana)
+sigue.pack()
+sigue.place(x=430,y=295)
+
+#boton anterior semana
+ante=ttk.Button(raiz,text="Semana Anterior",command=anterior_semana)
+ante.pack()
+ante.place(x=15,y=295)
 
 def abrir_ventana():
     from centralizacion import centrar
@@ -102,17 +128,15 @@ def abrir_ventana():
     centrar(ventananueva,270,450)
     ##ventananueva.iconbitmap("calendario.ico")
     ##radioValue = tk.IntVar()
-    
+    radio = tk.IntVar()
+    radio.set(1)
     #CREACION DE HORAS,DIAS Y MESES EN LISTA
     x=datetime.datetime.now()
     d=x.strftime("%d")
     dia_actual=int(d)            
     m=x.strftime("%m")
-    mes=int(m)
     a=x.strftime("%Y")
-    anio=int(a)
     h=x.strftime("%H")
-    hora_actual=int(h)
 
     meses=list()
     horas=list()
@@ -179,7 +203,7 @@ def abrir_ventana():
     Label(ventananueva,text="min").place(x=185,y=180)
     
     #BOTONES importante y normal
-    radio = tk.IntVar()
+    
     Radiobutton(ventananueva,
             text="Normal",
             variable=radio,
@@ -235,7 +259,7 @@ def abrir_ventana():
     Label(ventananueva,text="Min:").place(x=165,y=300)
 
     #label descripcion
-    descripcion=Label(ventananueva,text="Descripción:").place(x=4,y=327)
+    Label(ventananueva,text="Descripción:").place(x=4,y=327)
     #texto descripcion
     descripcion_texto = Text(ventananueva, height=3,width=32)
     descripcion_texto.pack()
@@ -244,22 +268,27 @@ def abrir_ventana():
     def agregado():
     #titulo,importancia,fecha_recordatorio,fecha_hora,descripcion):
         import json
+        import datetime
         import tkinter as tk
         from tkinter import messagebox,ttk
         messagebox.showinfo(message="Evento Agregado", title="Calendario")
-        
         titulo=tituloe.get()
+        #fecha y hora actuales
+        fechayhora=[fechan+","+horaln]
 
-        #fechayhora=[fechan]+[horaln]
-        fecha=fechan
+        #duracion
+        horaf=horaed.get()
+        minutof=minutosed.get()
+        duracion='{}:{}'.format(horaf,minutof)
 
-        hora=horaed.get()
-        minuto=minutosed.get()
-        duracion='{}:{}'.format(hora,minuto)
-        
+        #dia hora min recordatorio
         hora_recor=horaer.get()
         dia_recor=diar.get()
-        fecha_recordatorio=dia_recor+":"+hora_recor
+        mier=minutoser.get()
+
+        diare=dia_recor+"/"+"3"+"/"+"2023"
+        horar = hora_recor+":"+mier
+        fecha_recordatorio=[diare+","+horar]
 
         descripcion=descripcion_texto.get("1.0","end")
         des=descripcion.rstrip()
@@ -270,16 +299,16 @@ def abrir_ventana():
         elif im=="2":
             importancia="Importante"
 
-
-        #t=Eventos(titulo,fechayhora,importancia,fecha_recordatorio,duracion,des)
-        datos=[{"Descripcion":descripcion,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha":fecha,"Titulo":titulo}]
+        datos=[{"Descripcion":des,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha y hora":fechayhora,"Titulo":titulo,"Duracion":duracion}]
         def guardar_evento(datos):
             """Guarda datos en un archivo json cuando el boton de agregar es ejecutado"""
             import json
-            with open("eventos.json",'w') as archivo:
+            with open("datos.json",'w') as archivo:
                 json.dump(datos,archivo)
             Eventos.agregar_evento()
+        
         guardar_evento(datos)
+        
 
         def modificar_evento():
             from centralizacion import centrar
@@ -289,20 +318,63 @@ def abrir_ventana():
             ventanamod = Toplevel(raiz)
             ventanamod.focus_set()
             ventanamod.title("Modificar evento")
-            ventanamod.geometry("270x450")
-            centrar(ventanamod,270,450)
-
+            ventanamod.geometry("270x350")
+            centrar(ventanamod,270,350)
+            
+            
+            #configuracion
             import json
-            with open("eventos.json",'r') as archivo:
-                data=json.load(archivo)
-                print(data)
-           
-            #Label modifcar evento
-            Label(ventanamod,text="Seleccione que evento desea modificar:").place(x=5,y=10)   
-            c=ttk.Combobox(ventanamod,values=tituloseventos)
-            minutoser.place(x=100,y=100)
-            minutoser.config(width="3")
+            with open("eventos.json",'r') as a:
+                datoss=json.load(a)
+            with open('eventos.json', 'w') as f:
+                json.dump(datoss, f, indent=4)
 
+            listatitulos=list()
+
+            datajs = json.dumps(datoss, indent=4, sort_keys=True)#list json
+            datas = json.loads(datajs)#objeto python
+            #mostrar y añadir a lista Titulos
+            for a in range(len(datas)):
+                aa=(datas[a])
+                for b in aa:
+                    c=aa[b]
+                    if b == "Titulo":
+                        listatitulos.append(c)
+
+            def selecciontitulo():
+                f=Frame(ventanamod)
+                f.pack()
+                f.config(width="270",height="350")
+                Label(f,text="Modificar: ").place(x=20,y=100)
+                
+                Label(f,text="Titulo:").place(x=20,y=140)
+                titutlom=Entry(f)
+                titutlom.place(x=70,y=140)
+                titutlom.insert(0, "Nuevo Titulo")
+
+                Label(f,text="Fecha:").place(x=20,y=170)
+                fecham=Entry(f)
+                fecham.place(x=70,y=170)
+                fecham.insert(0,"dd/mm/aa")
+
+
+                Label(f,text="Hora:").place(x=20,y=200)
+                horam=Entry(f)
+                horam.place(x=20,y=200)
+                horam.insert(0,"Hora")
+
+
+                
+
+
+            #Label modifcar evento
+            Label(ventanamod,text="Seleccione que evento desea modificar:").place(x=5,y=5)   
+            c=ttk.Combobox(ventanamod,values=listatitulos)
+            c.place(x=50,y=50)
+            c.config(width="6")
+            #boton seleccionar
+            bc=ttk.Button(ventanamod,text="Seleccionar",command=selecciontitulo)
+            bc.place(x=120,y=50)
 
         #boton modificar evento
         boton2=Button(raiz,text="Modificar\n Evento",command=modificar_evento)
@@ -327,17 +399,10 @@ def abrir_ventana():
     boto_salir.pack()
     boto_salir.place(x=20,y=415)
 
-
-
 #boton agregar evento
-boton1=Button(raiz,text="Agregar\nEvento",command=abrir_ventana)
-boton1.config(width=7,height=3)
-boton1.place(x=210,y=320)
-
-
-
-
-numerosemana=calcular_semana_actual(anio,mes)
-mostrar_calendario(anio,mes,numerosemana)
+from tkinter import ttk
+boton1=ttk.Button(raiz,text="Agregar Evento",command=abrir_ventana)
+boton1.pack()
+boton1.place(x=220,y=330)
 
 raiz.mainloop()

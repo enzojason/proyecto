@@ -5,22 +5,33 @@ import tkinter as tk
 from centralizacion import centrar
 locale.setlocale(locale.LC_ALL, '')
 from tkinter import *
+
 #clase evento 
 class Eventos():
-    def __init__(self,titulo,fechayhora,importancia,fecha_recordatorio,duracion=1,descripcion="",etiquetas=""):
+    def __init__(self,titulo,fecha,importancia,fecha_recordatorio,duracion=1,descripcion="",etiquetas=""):
         """Se crea el objeto evento"""
         self.titulo=titulo
-        self.fechayhora=fechayhora
+        self.fecha=fecha
         self.descripcion=descripcion
         self.importancia=importancia
         self.fecha_recordatorio=fecha_recordatorio
         self.etiquetas=etiquetas
-    
-    def guardar_evento(datos):
+
+    import json
+    js=open("eventos.json",'w')
+    js.close()
+
+    def agregar_evento():
+        #agrega eventos en archivo json
         import json
-        #datos={"Descripcion":self.descripcion,"Fecha Recordatorio":self.fecha_recordatorio,"Importancia":self.importancia,"Fecha y horaa":self.fechayhora,"Titulo":self.titulo}
-        with open("eventos.json",'a') as archivo:
-            json.dump(datos,archivo)
+        with open("datos.json",'r+') as ar:
+            data=json.load(ar)
+
+        with open("eventos.json",'r')as arc:
+            dataj=json.load(arc)
+        dataj.append(data)
+        with open("eventos.json",'w') as archivo:
+            json.dump(dataj,archivo)
             
 raiz=tk.Tk()
 raiz.title("Calendario") #Cambiar el nombre de la ventana
@@ -35,7 +46,13 @@ fecha=x.strftime("%A %d de %B %Y")
 labelfecha=Label(raiz,text=fecha)
 labelfecha.place(x=310,y=15)
 labelfecha.config(fg="black",font=("Verdana",12))
-
+#datos de la fecha actual
+d=x.strftime("%d")
+dia_actual=int(d)            
+m=x.strftime("%m")
+mes=int(m)
+a=x.strftime("%Y")
+anio=int(a)
 
 #label encabezado fecha
 encabezado=Label(raiz,text="Lunes     Martes     Miercoles  Jueves   Viernes     Sabado    Domingo")
@@ -61,15 +78,6 @@ def mostrar_calendario(anio,mes,numero_semana):
         celda=Label(mi_Frame,height=9,width=6,text=x,bg="grey")
         celda.config(fg="black",bg="white",font=("Verdana",13))
         celda.grid(padx=1,pady=1,row=0,column=x)
-
-#datos de la fecha actual
-x=datetime.datetime.now()
-d=x.strftime("%d")
-dia_actual=int(d)            
-m=x.strftime("%m")
-mes=int(m)
-a=x.strftime("%Y")
-anio=int(a)
 
 
 #calcular numero de semana donde se encuentra el dia en la matriz que se va a crear Mes
@@ -242,7 +250,8 @@ def abrir_ventana():
         
         titulo=tituloe.get()
 
-        fechayhora=[fechan]+[horaln]
+        #fechayhora=[fechan]+[horaln]
+        fecha=fechan
 
         hora=horaed.get()
         minuto=minutosed.get()
@@ -261,18 +270,48 @@ def abrir_ventana():
         elif im=="2":
             importancia="Importante"
 
-        #t=Eventos(titulo,fechayhora,importancia,fecha_recordatorio,duracion,des)
-        datos={"Descripcion":descripcion,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha y horaa":fechayhora,"Titulo":titulo}
 
-        #def guardar_evento():
-        #    import json
-        #    datos={"Descripcion":self.descripcion,"Fecha Recordatorio":self.fecha_recordatorio,"Importancia":self.importancia,"Fecha y horaa":self.fechayhora,"Titulo":self.titulo}
-        #    with open("eventos.json",'w') as archivo:
-        #        json.dump(datos,archivo)
-        Eventos.guardar_evento(datos)
+        #t=Eventos(titulo,fechayhora,importancia,fecha_recordatorio,duracion,des)
+        datos=[{"Descripcion":descripcion,"Fecha Recordatorio":fecha_recordatorio,"Importancia":importancia,"Fecha":fecha,"Titulo":titulo}]
+        def guardar_evento(datos):
+            """Guarda datos en un archivo json cuando el boton de agregar es ejecutado"""
+            import json
+            with open("eventos.json",'w') as archivo:
+                json.dump(datos,archivo)
+            Eventos.agregar_evento()
+        guardar_evento(datos)
+
+        def modificar_evento():
+            from centralizacion import centrar
+            import tkinter as tk
+            from tkinter import messagebox,ttk
+
+            ventanamod = Toplevel(raiz)
+            ventanamod.focus_set()
+            ventanamod.title("Modificar evento")
+            ventanamod.geometry("270x450")
+            centrar(ventanamod,270,450)
+
+            import json
+            with open("eventos.json",'r') as archivo:
+                data=json.load(archivo)
+                print(data)
+           
+            #Label modifcar evento
+            Label(ventanamod,text="Seleccione que evento desea modificar:").place(x=5,y=10)   
+            c=ttk.Combobox(ventanamod,values=tituloseventos)
+            minutoser.place(x=100,y=100)
+            minutoser.config(width="3")
+
+
+        #boton modificar evento
+        boton2=Button(raiz,text="Modificar\n Evento",command=modificar_evento)
+        boton2.config(width=9,height=3)
+        boton2.place(x=15,y=320)
+
+        #cierra la ventana de agregar
         ventananueva.destroy()
         
-    
     def salir():
         ventananueva.quit()
 
@@ -288,10 +327,13 @@ def abrir_ventana():
     boto_salir.pack()
     boto_salir.place(x=20,y=415)
 
-#botonagregar
+
+
+#boton agregar evento
 boton1=Button(raiz,text="Agregar\nEvento",command=abrir_ventana)
 boton1.config(width=7,height=3)
 boton1.place(x=210,y=320)
+
 
 
 

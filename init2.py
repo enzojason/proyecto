@@ -273,7 +273,6 @@ def abrir_ventana():
     descripcion_texto.place(x=4,y=350)
     
     def agregado():
-    #titulo,importancia,fecha_recordatorio,fecha_hora,descripcion):
         import json
         import datetime
         import tkinter as tk
@@ -311,9 +310,66 @@ def abrir_ventana():
         Eventos.listaeventos.append(entry)
         Eventos.agregar_evento()
            
-        
+        def eliminar_evento():
+            from centralizacion import centrar
+            import tkinter as tk
+            from tkinter import messagebox,ttk
 
+            ventanam = Toplevel(raiz)
+            ventanam.focus_set()
+            ventanam.title("Eliminar evento")
+            ventanam.geometry("200x200")
+            centrar(ventanam,200,200)
+                
+            import json
+            with open("eventos.json",'r') as archivo:
+                datos=json.load(archivo)
+                datajs = json.dumps(datos, indent=4, sort_keys=True)#list json
+                datas = json.loads(datajs)#objeto python
             
+                listatitulos=[]
+            for a in range(len(datas)):
+                aa=(datas[a])
+            for b in aa:
+                c=aa[b]
+                if b == "Titulo":
+                    listatitulos.append(c) 
+
+            def salirr():
+                ventanam.quit()
+
+            def eliminar():
+                #eliminar un evento
+                from tkinter import messagebox
+                messagebox.showinfo(message="Se ha eliminado un evento", title="Eliminar Evento")
+                with open("eventos.json",'r') as archivo:
+                    datos=json.load(archivo)
+                    datajs = json.dumps(datos, indent=4, sort_keys=True)#list json
+                    datas = json.loads(datajs)#objeto python
+                    for i in range(len(listatitulos)):
+                        if listatitulos[i] == combotitulo.get():
+                                numero=i
+                    datas.pop(numero)
+                with open("eventos.json",'w') as archivo:
+                    json.dump(datas,archivo)
+
+            #boton salir
+            bs=ttk.Button(ventanam,text="Salir",command=salirr)
+            bs.pack()
+            bs.place(x=10,y=140)
+
+             #boton guardar
+            bg=ttk.Button(ventanam,text="Elimnar",command=eliminar)
+            bg.pack()
+            bg.place(x=100,y=140)
+
+            #Label 
+            Label(ventanam,text="Seleccione el Evento \n a eliminar:").place(x=10,y=25)   
+            combotitulo=ttk.Combobox(ventanam,values=listatitulos)
+            combotitulo.place(x=50,y=80)
+            combotitulo.config(width="12")
+            
+
         def modificar_evento():
             from centralizacion import centrar
             import tkinter as tk
@@ -340,7 +396,7 @@ def abrir_ventana():
                     c=aa[b]
                     if b == "Titulo":
                         listatitulos.append(c)
-            
+               
 
             def selecciontitulo():
                 f=Frame(ventanamod)
@@ -368,6 +424,7 @@ def abrir_ventana():
                     nuevo.place(x=22,y=100)
                     nuevo.insert(0, "Nueva@ "+a)
                     nuevo.focus_set()
+
                     def salirc():
                         fe.quit()
                     
@@ -423,7 +480,12 @@ def abrir_ventana():
         #boton modificar evento
         boton2=Button(raiz,text="Modificar\n Evento",command=modificar_evento)
         boton2.config(width=9,height=3)
-        boton2.place(x=15,y=320)
+        boton2.place(x=15,y=325)
+
+        #boton eliminar evento
+        boton3=Button(raiz,text="Eliminar\n Evento",command=eliminar_evento)
+        boton3.config(width=9,height=3)
+        boton3.place(x=455,y=325)
 
         #cierra la ventana de agregar
         ventananueva.destroy()
